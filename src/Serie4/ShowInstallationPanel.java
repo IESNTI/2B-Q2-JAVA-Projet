@@ -100,7 +100,7 @@ public class ShowInstallationPanel extends JPanel {
     }
     public void SQLRequest(String table){
         try {
-            this.remove(SQLtable);
+            this.remove(this.getComponent(2));
 
             JOptionPane.showMessageDialog(null, ""+table, "", JOptionPane.WARNING_MESSAGE);
             String sqlInstruction = "select * from " + table;
@@ -108,10 +108,10 @@ public class ShowInstallationPanel extends JPanel {
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             JTable myTable = new JTable (GenericModel);
             JScrollPane SQLtableX = new JScrollPane(myTable);
-            this.remove(SQLtableX);
             SQLtableX.setPreferredSize(new Dimension(900, 300));
             this.add(SQLtableX);
-            SQLtableX.repaint();
+            this.revalidate();
+            this.repaint();
 
         } catch (
                 SQLException e) {
