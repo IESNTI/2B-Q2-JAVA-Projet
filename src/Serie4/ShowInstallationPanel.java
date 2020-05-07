@@ -1,11 +1,12 @@
 package Serie4;
 
 import javax.swing.*;
+import java.sql.Connection;
 
-public class NewInstallationPanel extends JPanel {
+public class ShowInstallationPanel extends JPanel {
     private JLabel welcomeLabel;
-    public NewInstallationPanel() {
-        welcomeLabel = new JLabel("Bienvenue dans une nouvelle installation");
+    public ShowInstallationPanel(Connection connection) {
+        welcomeLabel = new JLabel("Affichage des nouvelles installations");
         this.add(welcomeLabel);
     }
 }

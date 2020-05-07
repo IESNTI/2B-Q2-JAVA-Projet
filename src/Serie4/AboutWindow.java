@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class AboutWindow extends JFrame{
     private Container cont;
-    private AboutCont panel;
+    private AboutPanel panel;
 
     public AboutWindow() {
         super("A propos");
@@ -17,7 +17,7 @@ public class AboutWindow extends JFrame{
             }
         });
 
-        panel = new AboutCont();
+        panel = new AboutPanel();
         cont = getContentPane();
         cont.add(panel);
         cont.setVisible(true);
