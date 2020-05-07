@@ -10,7 +10,7 @@ import javax.swing.*;
 
 public class MainWindow extends JFrame {
     // Etablir la connexion ("le câble qui relie le programme Java à la BD")
-    Connection connection = AccessBDGen.connecter("DbInstallations", "java", "b88iBowEv5te");
+    private Connection connection = AccessBDGen.connecter("DbInstallations", "java", "b88iBowEv5te");
 
     private Container cont = getContentPane();
     private WelcomePanel welcomePanel = new WelcomePanel(connection);
