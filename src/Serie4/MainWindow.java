@@ -61,12 +61,12 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == menuHelpAbout)
                 new AboutWindow();
-            else if (e.getSource() == menuInstallationsNew)
-                switchPanel(newInstallationPanel);
+            else if (e.getSource() == menuInstallationsNew){
+                showInstallationPanel.SQLRequest("Installation");
+                switchPanel(newInstallationPanel);}
             else if (e.getSource() == menuInstallationsShow)
                 switchPanel(showInstallationPanel);
         }
 
     }
-
 }
