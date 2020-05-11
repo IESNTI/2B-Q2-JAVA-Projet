@@ -13,23 +13,27 @@ import javax.swing.*;
 import java.sql.Connection;
 
 public class ShowInstallationPanel extends JPanel {
-    private JLabel change;
+    private JLabel changeTableLabel;
     private String[] tables = {"Installation","AnneeEtude","Editeur","FamilleSoftware","Fournisseur","OS",
             "Professeur","ResponsableReseaux","Section","SoftwarePreinstalle","TypePC","UtilisationSoftware"};
     private JComboBox tableSelect;
     private JTable myTable;
     private JScrollPane SQLtable;
+
+    private Connection connection;
+
     public ShowInstallationPanel(Connection connection) {
+        this.connection = connection;
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        change = new JLabel("Changer de table :");
-        this.add(change);
+        changeTableLabel = new JLabel("Changer de table :");
+        this.add(changeTableLabel);
         tableSelect= new JComboBox(tables);
         tableSelect.setSelectedIndex(0);
         tableSelect.setMaximumRowCount(12);
         this.add(tableSelect);
         try {
-            String sqlInstruction = "select * from Installation ";
+            String sqlInstruction = "select * from Installation ;";
             PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             myTable = new JTable (GenericModel);
@@ -45,66 +49,15 @@ public class ShowInstallationPanel extends JPanel {
     }
     private class CBoxListener implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
-
-            switch (tableSelect.getSelectedIndex()) {
-                case 0:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[0]);
-                        break;
-                case 1:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[1]);
-                        break;
-                case 2:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[2]);
-                        break;
-                case 3:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[3]);
-                    break;
-                case 4:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[4]);
-                    break;
-                case 5:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[5]);
-                    break;
-                case 6:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[6]);
-                    break;
-                case 7:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[7]);
-                    break;
-                case 8:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[8]);
-                    break;
-                case 9:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[9]);
-                    break;
-                case 10:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[10]);
-                    break;
-                case 11:
-                    if (e.getStateChange() == ItemEvent.SELECTED)
-                        SQLRequest(tables[11]);
-                    break;
-            }
+            SQLRequest(tables[tableSelect.getSelectedIndex()]);
         }
     }
+
     public void SQLRequest(String table){
         try {
             this.remove(this.getComponent(2));
-
-            JOptionPane.showMessageDialog(null, ""+table, "", JOptionPane.WARNING_MESSAGE);
-            String sqlInstruction = "select * from " + table;
-            PreparedStatement prepStat = AccessBDGen.connecter("DbInstallations", "java", "b88iBowEv5te").prepareStatement(sqlInstruction);
+            String sqlInstruction = "select * from " + table + ";";
+            PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             JTable myTable = new JTable (GenericModel);
             JScrollPane SQLtableX = new JScrollPane(myTable);
@@ -112,7 +65,6 @@ public class ShowInstallationPanel extends JPanel {
             this.add(SQLtableX);
             this.revalidate();
             this.repaint();
-
         } catch (
                 SQLException e) {
             System.out.println(e.getMessage());
