@@ -32,6 +32,10 @@ public class MainWindow extends JFrame {
             }
         });
 
+        //Centers the display window
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+
         bar.add(menuInstallations);
         bar.add(menuHelp);
         menuHelp.add(menuHelpAbout);
@@ -59,13 +63,13 @@ public class MainWindow extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == menuHelpAbout)
-                new AboutWindow();
+            if (e.getSource() == menuHelpAbout){
+                new AboutWindow();}
             else if (e.getSource() == menuInstallationsNew){
-                showInstallationPanel.SQLRequest("Installation");
                 switchPanel(newInstallationPanel);}
-            else if (e.getSource() == menuInstallationsShow)
-                switchPanel(showInstallationPanel);
+            else if (e.getSource() == menuInstallationsShow){
+                showInstallationPanel.SQLRequest("Installation");
+                switchPanel(showInstallationPanel);}
         }
 
     }
