@@ -32,7 +32,9 @@ public class ShowInstallationPanel extends JPanel {
         tableSelect.setSelectedIndex(0);
         tableSelect.setMaximumRowCount(12);
         this.add(tableSelect);
+
         try {
+            //Requests and shows SQL table
             String sqlInstruction = "select * from Installation ;";
             PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
@@ -44,15 +46,19 @@ public class ShowInstallationPanel extends JPanel {
                 SQLException e) {
             System.out.println(e.getMessage());
         }
+
         CBoxListener itemTable = new CBoxListener();
         tableSelect.addItemListener(itemTable);
     }
+
+    //Reads and updates table on ComboBox input
     private class CBoxListener implements ItemListener {
         public void itemStateChanged(ItemEvent e) {
             SQLRequest(tables[tableSelect.getSelectedIndex()]);
         }
     }
 
+    //Requests table on string input
     public void SQLRequest(String table){
         try {
             this.remove(this.getComponent(2));
