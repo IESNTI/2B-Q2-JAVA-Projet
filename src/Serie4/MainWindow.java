@@ -1,10 +1,12 @@
 package Serie4;
 
 import accessBD.AccessBDGen;
+import accessBD.TableModelGen;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.*;
 
