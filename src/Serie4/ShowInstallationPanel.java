@@ -14,7 +14,7 @@ import java.sql.Connection;
 
 public class ShowInstallationPanel extends JPanel {
     private JLabel changeTableLabel;
-    private String[] tables = {"Installation","AnneeEtude","Editeur","FamilleSoftware","Fournisseur","OS",
+    private String[] tables = {"Installation","AnneeEtude","Software","Editeur","FamilleSoftware","Fournisseur","OS",
             "Professeur","ResponsableReseaux","Section","SoftwarePreinstalle","TypePC","UtilisationSoftware"};
     private JComboBox tableSelect;
     private JTable myTable;
@@ -30,7 +30,7 @@ public class ShowInstallationPanel extends JPanel {
         this.add(changeTableLabel);
         tableSelect= new JComboBox(tables);
         tableSelect.setSelectedIndex(0);
-        tableSelect.setMaximumRowCount(12);
+        tableSelect.setMaximumRowCount(13);
         this.add(tableSelect);
 
         try {
