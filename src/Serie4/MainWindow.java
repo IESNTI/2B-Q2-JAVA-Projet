@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
         menuHelp.add(menuHelpAbout);
         menuInstallations.add(menuInstallationsNew);
         menuInstallations.add(menuInstallationsShow);
-        add(bar, BorderLayout.PAGE_START);
+        setJMenuBar(bar);
 
         cont.add(welcomePanel);
         setVisible(true);
@@ -55,7 +55,7 @@ public class MainWindow extends JFrame {
     }
 
     private void switchPanel(JPanel panel) {
-        cont.remove(cont.getComponent(1));
+        cont.removeAll();
         cont.add(panel);
         cont.revalidate();
         cont.repaint();
