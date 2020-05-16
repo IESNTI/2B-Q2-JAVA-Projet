@@ -8,7 +8,7 @@ public class DeleteInstallationPanel extends JPanel {
 
     public DeleteInstallationPanel(Connection connection) {
         welcomeLabel = new JLabel("Bienvenue dans le deletage");
-        this.add(welcomeLabel);
+        add(welcomeLabel);
 
     }
 

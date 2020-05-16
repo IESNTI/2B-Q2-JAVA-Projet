@@ -8,7 +8,7 @@ public class CustomShowInstallationPanel extends JPanel {
 
     public CustomShowInstallationPanel(Connection connection) {
         welcomeLabel = new JLabel("Bienvenue dans la recherche custom des install");
-        this.add(welcomeLabel);
+        add(welcomeLabel);
 
     }
 
