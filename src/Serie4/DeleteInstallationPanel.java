@@ -74,8 +74,8 @@ public class DeleteInstallationPanel extends JPanel {
 
     private class DeleteButtonManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-                int confirm = JOptionPane.showOptionDialog(null,"Voulez vous supprimer l'installation n°" + installationToDelete.getText()+ " ?","", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
-                if(confirm == 0){
+                int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous supprimer l'installation n°" + installationToDelete.getText()+ " ?","", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
+                if(confirmDialog == 0){
                     try {
                     String sqlInstruction = ("DELETE FROM Installation WHERE idInstallation = "+ installationToDelete.getText() + ";");
                     PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
