@@ -171,11 +171,7 @@ public class NewInstallationPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == validateButton) {
                 if (validateElements())
-                    try {
-                        submitForm();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                    submitForm();
                 else
                     System.out.println("Manque des éléments");
             } else if (e.getSource() == cancelButton) {
@@ -196,71 +192,89 @@ public class NewInstallationPanel extends JPanel {
 
     }
 
-    void submitForm() throws SQLException {
-        String sqlInstructionSubmitForm = "insert into Installation "
-                + "(IdInstallation, DateInstallation, TypeInstallation, Commentaires, DureeInstallation, RefProcedureInstallation, Validation, DateValidation, CodeSoftware, Matricule, CodeOS) "
-                + "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement myPrepStatSubmitForm = connection.prepareStatement(sqlInstructionSubmitForm);
-
-        String idInstallationSQLInstruction = "SELECT MAX(IdInstallation) FROM Installation;";
-        PreparedStatement idInstallationPrepStat = connection.prepareStatement(idInstallationSQLInstruction);
-        Object[] idInstallationSQLResult = AccessBDGen.creerListe1Colonne(idInstallationPrepStat);
-        myPrepStatSubmitForm.setInt(1, ((int) idInstallationSQLResult[0]) + 1);
-
-        Date dateInstallationSQLDate = (Date) dateInstallationPicker.getModel().getValue();
-        myPrepStatSubmitForm.setDate(2, new java.sql.Date(dateInstallationSQLDate.getTime()));
-
-        String typeInstallationSelectedItem = ((JTextField) typeInstallationComboBox.getEditor().getEditorComponent())
-                .getText();
-        myPrepStatSubmitForm.setInt(3, typeInstallationArrayList.indexOf(typeInstallationSelectedItem));
-
-        myPrepStatSubmitForm.setString(4, commentairesTextArea.getText());
-
-        SimpleDateFormat dureeInstallationFormat = new SimpleDateFormat("HH:mm");
-        dureeInstallationFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date dureeInstallation = new Date();
+    void refreshPanel() {
+        removeAll();
         try {
-            dureeInstallation = dureeInstallationFormat.parse(timeEditor.getFormat().format(timeSpinner.getValue()));
-        } catch (ParseException e) {
+            addElements();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        revalidate();
+        repaint();
+    }
+
+    void submitForm() {
+        try {
+            String sqlInstructionSubmitForm = "insert into Installation "
+                    + "(IdInstallation, DateInstallation, TypeInstallation, Commentaires, DureeInstallation, RefProcedureInstallation, Validation, DateValidation, CodeSoftware, Matricule, CodeOS) "
+                    + "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement myPrepStatSubmitForm = connection.prepareStatement(sqlInstructionSubmitForm);
+
+            String idInstallationSQLInstruction = "SELECT MAX(IdInstallation) FROM Installation;";
+            PreparedStatement idInstallationPrepStat = connection.prepareStatement(idInstallationSQLInstruction);
+            Object[] idInstallationSQLResult = AccessBDGen.creerListe1Colonne(idInstallationPrepStat);
+            myPrepStatSubmitForm.setInt(1, ((int) idInstallationSQLResult[0]) + 1);
+
+            Date dateInstallationSQLDate = (Date) dateInstallationPicker.getModel().getValue();
+            myPrepStatSubmitForm.setDate(2, new java.sql.Date(dateInstallationSQLDate.getTime()));
+
+            String typeInstallationSelectedItem = ((JTextField) typeInstallationComboBox.getEditor()
+                    .getEditorComponent()).getText();
+            myPrepStatSubmitForm.setInt(3, typeInstallationArrayList.indexOf(typeInstallationSelectedItem));
+
+            myPrepStatSubmitForm.setString(4, commentairesTextArea.getText());
+
+            SimpleDateFormat dureeInstallationFormat = new SimpleDateFormat("HH:mm");
+            dureeInstallationFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date dureeInstallation = new Date();
+            try {
+                dureeInstallation = dureeInstallationFormat
+                        .parse(timeEditor.getFormat().format(timeSpinner.getValue()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            myPrepStatSubmitForm.setInt(5, (int) (dureeInstallation.getTime() / 1000));
+
+            myPrepStatSubmitForm.setString(6, refProcedureInstallationTextField.getText());
+
+            myPrepStatSubmitForm.setString(7, getSelectedButtonText(validationButtonGroup));
+
+            if (dateValidationPicker.getModel().getValue() == null) {
+                myPrepStatSubmitForm.setNull(8, Types.DATE);
+            } else {
+                Date dateValidation = (Date) dateValidationPicker.getModel().getValue();
+                java.sql.Date dateValidationSQLDate = new java.sql.Date(dateValidation.getTime());
+                myPrepStatSubmitForm.setDate(8, dateValidationSQLDate);
+            }
+
+            String codeSoftwareSQLInstruction = "SELECT CodeSoftware FROM Software WHERE Nom = ?;";
+            PreparedStatement codeSoftwarePrepStat = connection.prepareStatement(codeSoftwareSQLInstruction);
+            String codeSoftwareSelectedItem = ((JTextField) codeSoftwareComboBox.getEditor().getEditorComponent())
+                    .getText();
+            codeSoftwarePrepStat.setString(1, codeSoftwareSelectedItem);
+            Object[] codeSoftwareSQLResult = AccessBDGen.creerListe1Colonne(codeSoftwarePrepStat);
+            myPrepStatSubmitForm.setString(9, (String) codeSoftwareSQLResult[0]);
+
+            String matriculeSQLInstruction = "SELECT Matricule FROM ResponsableReseaux WHERE NomPrenom = ?;";
+            PreparedStatement matriculePrepStat = connection.prepareStatement(matriculeSQLInstruction);
+            String matriculeSelectedItem = ((JTextField) matriculeComboBox.getEditor().getEditorComponent()).getText();
+            matriculePrepStat.setString(1, matriculeSelectedItem);
+            Object[] matriculeSQLResult = AccessBDGen.creerListe1Colonne(matriculePrepStat);
+            myPrepStatSubmitForm.setString(10, (String) matriculeSQLResult[0]);
+
+            String codeOSSQLInstruction = "SELECT CodeOS FROM OS WHERE Libelle = ?;";
+            PreparedStatement codeOSPrepStat = connection.prepareStatement(codeOSSQLInstruction);
+            String codeOSSelectedItem = ((JTextField) codeOSComboBox.getEditor().getEditorComponent()).getText();
+            codeOSPrepStat.setString(1, codeOSSelectedItem);
+            Object[] codeOSSQLResult = AccessBDGen.creerListe1Colonne(codeOSPrepStat);
+            myPrepStatSubmitForm.setString(11, (String) codeOSSQLResult[0]);
+
+            myPrepStatSubmitForm.executeUpdate();
+            refreshPanel();
+        } catch (SQLException e) {
+            // print message d'erreur
             e.printStackTrace();
         }
-        myPrepStatSubmitForm.setInt(5, (int) (dureeInstallation.getTime() / 1000));
-
-        myPrepStatSubmitForm.setString(6, refProcedureInstallationTextField.getText());
-
-        myPrepStatSubmitForm.setString(7, getSelectedButtonText(validationButtonGroup));
-
-        if (dateValidationPicker.getModel().getValue() == null) {
-            myPrepStatSubmitForm.setNull(8, Types.DATE);
-        } else {
-            Date dateValidation = (Date) dateValidationPicker.getModel().getValue();
-            java.sql.Date dateValidationSQLDate = new java.sql.Date(dateValidation.getTime());
-            myPrepStatSubmitForm.setDate(8, dateValidationSQLDate);
-        }
-
-        String codeSoftwareSQLInstruction = "SELECT CodeSoftware FROM Software WHERE Nom = ?;";
-        PreparedStatement codeSoftwarePrepStat = connection.prepareStatement(codeSoftwareSQLInstruction);
-        String codeSoftwareSelectedItem = ((JTextField) codeSoftwareComboBox.getEditor().getEditorComponent())
-                .getText();
-        codeSoftwarePrepStat.setString(1, codeSoftwareSelectedItem);
-        Object[] codeSoftwareSQLResult = AccessBDGen.creerListe1Colonne(codeSoftwarePrepStat);
-        myPrepStatSubmitForm.setString(9, (String) codeSoftwareSQLResult[0]);
-
-        String matriculeSQLInstruction = "SELECT Matricule FROM ResponsableReseaux WHERE NomPrenom = ?;";
-        PreparedStatement matriculePrepStat = connection.prepareStatement(matriculeSQLInstruction);
-        String matriculeSelectedItem = ((JTextField) matriculeComboBox.getEditor().getEditorComponent()).getText();
-        matriculePrepStat.setString(1, matriculeSelectedItem);
-        Object[] matriculeSQLResult = AccessBDGen.creerListe1Colonne(matriculePrepStat);
-        myPrepStatSubmitForm.setString(10, (String) matriculeSQLResult[0]);
-
-        String codeOSSQLInstruction = "SELECT CodeOS FROM OS WHERE Libelle = ?;";
-        PreparedStatement codeOSPrepStat = connection.prepareStatement(codeOSSQLInstruction);
-        String codeOSSelectedItem = ((JTextField) codeOSComboBox.getEditor().getEditorComponent()).getText();
-        codeOSPrepStat.setString(1, codeOSSelectedItem);
-        Object[] codeOSSQLResult = AccessBDGen.creerListe1Colonne(codeOSPrepStat);
-        myPrepStatSubmitForm.setString(11, (String) codeOSSQLResult[0]);
-
-        myPrepStatSubmitForm.executeUpdate();
     }
 
     private class validationActionManager implements ActionListener {
