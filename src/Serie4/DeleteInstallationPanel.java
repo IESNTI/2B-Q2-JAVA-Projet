@@ -36,7 +36,6 @@ public class DeleteInstallationPanel extends JPanel {
         }
         ScrollPaneManager manager = new ScrollPaneManager();
         btn.addActionListener(manager);
-
     }
     private class ScrollPaneManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {

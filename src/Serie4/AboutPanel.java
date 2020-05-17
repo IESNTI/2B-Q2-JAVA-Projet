@@ -10,25 +10,25 @@ public class AboutPanel extends JPanel{
 
     public AboutPanel() {
 
-        this.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
+        setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
 
         text1 = new JLabel("<html><center>Programme développé en Java</center></html>",SwingConstants.CENTER);
         text2 = new JLabel("<html><center>Programmes utilisés : <br/>IntelliJ IDEA et Visual Studio Code</center></html>",SwingConstants.CENTER);
         text3 = new JLabel("<html><center>Jetez un coup d'oeil au repository et<br/>aux développeurs ci-dessous !</center></html>",SwingConstants.CENTER);
-        this.add(text1);
-        this.add(text2);
-        this.add(text3);
+        add(text1);
+        add(text2);
+        add(text3);
 
         unixfoxlink = new JButton("<html><a href=''>@unixfox</a></html>");
         keerowlink= new JButton("<html><a href=''>@keerow</a></html>");
         unixfoxlink.setPreferredSize(new Dimension(120, 30));
         keerowlink.setPreferredSize(new Dimension(120, 30));
-        this.add(unixfoxlink);
-        this.add(keerowlink);
+        add(unixfoxlink);
+        add(keerowlink);
 
         ghlink = new JButton("<html><a href=''>GitHub Repository</a></html>");
         ghlink.setPreferredSize(new Dimension(250, 30));
-        this.add(ghlink);
+        add(ghlink);
 
         ButtonManager buttonListener = new ButtonManager();
         ghlink.addActionListener(buttonListener);

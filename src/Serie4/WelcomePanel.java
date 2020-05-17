@@ -8,8 +8,8 @@ public class WelcomePanel extends JPanel{
     public WelcomePanel(Connection connection) {
         welcomeLabel = new JLabel("Bienvenue");
         JButton joinButton = new JButton ("Commencer le programme.");
-        this.add(welcomeLabel);
-        this.add(joinButton);
+        add(welcomeLabel);
+        add(joinButton);
 
     }
 

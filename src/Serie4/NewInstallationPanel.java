@@ -18,133 +18,150 @@ import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.TimeZone;
 
 public class NewInstallationPanel extends JPanel {
 
-    private JLabel idInstallationLabel, dateInstallationLabel, typeInstallationLabel, commentairesLabel,
-            dureeInstallationLabel, refProcedureInstallationLabel;
+    private JLabel dateInstallationLabel, typeInstallationLabel, commentairesLabel, dureeInstallationLabel,
+            refProcedureInstallationLabel;
     private JLabel validationLabel, dateValidationLabel, codeSoftwareLabel, matriculeLabel, codeOSLabel;
     private JTextField refProcedureInstallationTextField;
     private JComboBox typeInstallationComboBox, codeSoftwareComboBox, matriculeComboBox, codeOSComboBox;
     private JButton validateButton, cancelButton;
     private ButtonGroup validationButtonGroup;
+    private JPanel validationButtonPanel;
     private JTextArea commentairesTextArea;
-    private UtilDateModel model = new UtilDateModel();
-    private JDatePanelImpl datePanel = new JDatePanelImpl(model);
+    private UtilDateModel dateInstallationModel, dateValidationModel;
+    private JDatePanelImpl dateInstallationPanel, dateValidationPanel;
     private JDatePickerImpl dateInstallationPicker, dateValidationPicker;
+    ArrayList<String> typeInstallationArrayList = new ArrayList<String>(Arrays.asList("Standard", "Personnalisée"));
     private actionManager actionListener = new actionManager();
-    private validationManager validationListener = new validationManager();
+    private validationActionManager validationActionListener = new validationActionManager();
+    private JSpinner timeSpinner;
+    private JSpinner.DateEditor timeEditor;
     private Connection connection;
 
     public NewInstallationPanel(Connection connection) throws SQLException {
         this.connection = connection;
-        this.setLayout(new GridLayout(14, 10, 1, 1));
+        setLayout(new GridLayout(12, 2));
+        setPreferredSize(new Dimension(400, 300));
+        addElements();
+    }
 
-        // idInstallationLabel = new JLabel("ID de l'installation: ");
-        // // idInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        // this.add(idInstallationLabel);
-        // idInstallationTextField = new JTextField(30);
-        // idInstallationTextField.getDocument().addDocumentListener(validationListener);
-        // this.add(idInstallationTextField);
-
-        dateInstallationLabel = new JLabel("Date de l'installation: ");
+    void addElements() throws SQLException {
+        dateInstallationLabel = new JLabel("Date de l'installation (requis) : ");
         // dateInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(dateInstallationLabel);
-        dateInstallationPicker = new JDatePickerImpl(datePanel);
-        this.add(dateInstallationPicker);
+        add(dateInstallationLabel);
+        dateInstallationModel = new UtilDateModel();
+        dateInstallationPanel = new JDatePanelImpl(dateInstallationModel);
+        dateInstallationPicker = new JDatePickerImpl(dateInstallationPanel);
+        dateInstallationPicker.addActionListener(validationActionListener);
+        add(dateInstallationPicker);
 
-        typeInstallationLabel = new JLabel("Type de l'installation: ");
+        typeInstallationLabel = new JLabel("Type de l'installation (requis) : ");
         // typeInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(typeInstallationLabel);
-        String typeInstallationList[] = { "Standard", "Personnalisée" };
-        typeInstallationComboBox = new JComboBox(typeInstallationList);
+        add(typeInstallationLabel);
+        typeInstallationComboBox = new JComboBox(typeInstallationArrayList.toArray());
         typeInstallationComboBox.setSelectedIndex(-1);
-        ((JTextField)typeInstallationComboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(validationListener);
-        this.add(typeInstallationComboBox);
+        typeInstallationComboBox.addActionListener(validationActionListener);
+        add(typeInstallationComboBox);
 
         commentairesLabel = new JLabel("Commentaires: ");
         // commentairesLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(commentairesLabel);
+        add(commentairesLabel);
         commentairesTextArea = new JTextArea(2, 2);
         commentairesTextArea.addKeyListener(commentairesKeyListener);
-        this.add(commentairesTextArea);
+        add(commentairesTextArea);
 
-        dureeInstallationLabel = new JLabel("Durée de l'installation (HH:mm:ss): ");
+        dureeInstallationLabel = new JLabel("Durée de l'installation (heure:minute) : ");
         // dureeInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(dureeInstallationLabel);
-        JSpinner timeSpinner = new JSpinner(new SpinnerDateModel());
-        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm:ss");
+        add(dureeInstallationLabel);
+        timeSpinner = new JSpinner(new SpinnerDateModel(new Date(0), null, null, Calendar.MINUTE));
+        timeEditor = new JSpinner.DateEditor(timeSpinner, "hh:mm");
         timeSpinner.setEditor(timeEditor);
-        timeSpinner.setValue(new Date(0));
+        // timeSpinner.setValue(new Date(0));
         timeEditor.getTextField().setEditable(false);
-        this.add(timeSpinner);
+        add(timeSpinner);
 
-        refProcedureInstallationLabel = new JLabel("Référence de la procédure d'installation: ");
+        refProcedureInstallationLabel = new JLabel("Référence de la procédure d'installation : ");
         // refProcedureInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(refProcedureInstallationLabel);
+        add(refProcedureInstallationLabel);
         refProcedureInstallationTextField = new JTextField(50);
         refProcedureInstallationTextField.addKeyListener(refProcedureInstallationKeyListener);
-        refProcedureInstallationTextField.getDocument().addDocumentListener(validationListener);
-        this.add(refProcedureInstallationTextField);
+        add(refProcedureInstallationTextField);
 
-        validationLabel = new JLabel("Validation: ");
+        validationLabel = new JLabel("Validation (requis) : ");
         // validationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(validationLabel);
+        add(validationLabel);
         String validationButtonList[] = { "A prevoir", "Terminee", "En cours" };
         validationButtonGroup = new ButtonGroup();
+        validationButtonPanel = new JPanel();
         for (int i = 0; i < validationButtonList.length; i++) {
             JRadioButton validationButton = new JRadioButton(validationButtonList[i]);
+            validationButton.addActionListener(validationActionListener);
             validationButtonGroup.add(validationButton);
-            this.add(validationButton);
+            validationButtonPanel.add(validationButton);
         }
+        add(validationButtonPanel);
 
-        dateValidationLabel = new JLabel("Date de la validation: ");
+        dateValidationLabel = new JLabel("Date de la validation : ");
         // dateValidationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(dateValidationLabel);
-        dateValidationPicker = new JDatePickerImpl(datePanel);
-        this.add(dateValidationPicker);
+        add(dateValidationLabel);
+        dateValidationModel = new UtilDateModel();
+        dateValidationPanel = new JDatePanelImpl(dateValidationModel);
+        dateValidationPicker = new JDatePickerImpl(dateValidationPanel);
+        add(dateValidationPicker);
 
-        codeSoftwareLabel = new JLabel("Logiciel: ");
+        codeSoftwareLabel = new JLabel("Logiciel (requis) : ");
         // codeSoftwareLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(codeSoftwareLabel);
+        add(codeSoftwareLabel);
         String codeSoftwareSQLInstruction = "SELECT Nom FROM Software;";
         PreparedStatement codeSoftwarePrepStat = connection.prepareStatement(codeSoftwareSQLInstruction);
         Object[] codeSoftwareSQLResult = AccessBDGen.creerListe1Colonne(codeSoftwarePrepStat);
         codeSoftwareComboBox = new JComboBox(codeSoftwareSQLResult);
         codeSoftwareComboBox.setSelectedIndex(-1);
-        ((JTextField)codeSoftwareComboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(validationListener);
-        this.add(codeSoftwareComboBox);
+        codeSoftwareComboBox.addActionListener(validationActionListener);
+        add(codeSoftwareComboBox);
 
-        matriculeLabel = new JLabel("Matricule: ");
+        matriculeLabel = new JLabel("Matricule (requis) : ");
         // matriculeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(matriculeLabel);
+        add(matriculeLabel);
         String matriculeSQLInstruction = "SELECT NomPrenom FROM ResponsableReseaux;";
         PreparedStatement matriculePrepStat = connection.prepareStatement(matriculeSQLInstruction);
         Object[] matriculeSQLResult = AccessBDGen.creerListe1Colonne(matriculePrepStat);
         matriculeComboBox = new JComboBox(matriculeSQLResult);
         matriculeComboBox.setSelectedIndex(-1);
-        ((JTextField)matriculeComboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(validationListener);
-        this.add(matriculeComboBox);
+        matriculeComboBox.addActionListener(validationActionListener);
+        add(matriculeComboBox);
 
-        codeOSLabel = new JLabel("OS: ");
+        codeOSLabel = new JLabel("OS (requis) : ");
         // codeOSLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(codeOSLabel);
+        add(codeOSLabel);
         String codeOSSQLInstruction = "SELECT Libelle FROM OS;";
         PreparedStatement codeOSPrepStat = connection.prepareStatement(codeOSSQLInstruction);
         Object[] codeOSSQLResult = AccessBDGen.creerListe1Colonne(codeOSPrepStat);
         codeOSComboBox = new JComboBox(codeOSSQLResult);
         codeOSComboBox.setSelectedIndex(-1);
-        ((JTextField)codeOSComboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(validationListener);
-        this.add(codeOSComboBox);
+        codeOSComboBox.addActionListener(validationActionListener);
+        add(codeOSComboBox);
 
         validateButton = new JButton("Valider");
         validateButton.addActionListener(actionListener);
-        this.add(validateButton);
+        add(validateButton);
 
-        cancelButton = new JButton("Annuler");
+        cancelButton = new JButton("Réinitialiser");
         cancelButton.addActionListener(actionListener);
-        this.add(cancelButton);
+        add(cancelButton);
+
+        validateElements();
     }
 
     private class actionManager implements ActionListener {
@@ -152,60 +169,134 @@ public class NewInstallationPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == validateButton) {
-                System.out.println("valider");
+                if (validateElements())
+                    try {
+                        submitForm();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                else
+                    System.out.println("Manque des éléments");
             } else if (e.getSource() == cancelButton) {
-                System.out.println("cancel");
+                removeAll();
+                try {
+                    addElements();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                revalidate();
+                repaint();
             }
         }
 
     }
 
-    private class validationManager implements DocumentListener {
+    void submitForm() throws SQLException {
+        String sqlInstructionSubmitForm = "insert into Installation "
+                + "(IdInstallation, DateInstallation, TypeInstallation, Commentaires, DureeInstallation, RefProcedureInstallation, Validation, DateValidation, CodeSoftware, Matricule, CodeOS) "
+                + "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement myPrepStatSubmitForm = connection.prepareStatement(sqlInstructionSubmitForm);
 
-        public void changedUpdate(DocumentEvent e) {
-            validation();
+        String idInstallationSQLInstruction = "SELECT MAX(IdInstallation) FROM Installation;";
+        PreparedStatement idInstallationPrepStat = connection.prepareStatement(idInstallationSQLInstruction);
+        Object[] idInstallationSQLResult = AccessBDGen.creerListe1Colonne(idInstallationPrepStat);
+        myPrepStatSubmitForm.setInt(1, ((int) idInstallationSQLResult[0]) + 1);
+
+        Date dateInstallationSQLDate = (Date) dateInstallationPicker.getModel().getValue();
+        myPrepStatSubmitForm.setDate(2, new java.sql.Date(dateInstallationSQLDate.getTime()));
+
+        String typeInstallationSelectedItem = ((JTextField) typeInstallationComboBox.getEditor().getEditorComponent())
+                .getText();
+        myPrepStatSubmitForm.setInt(3, typeInstallationArrayList.indexOf(typeInstallationSelectedItem));
+
+        myPrepStatSubmitForm.setString(4, commentairesTextArea.getText());
+
+        SimpleDateFormat dureeInstallationFormat = new SimpleDateFormat("HH:mm");
+        dureeInstallationFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date dureeInstallation = new Date();
+        try {
+            dureeInstallation = dureeInstallationFormat.parse(timeEditor.getFormat().format(timeSpinner.getValue()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        myPrepStatSubmitForm.setInt(5, (int) (dureeInstallation.getTime() / 1000));
+
+        myPrepStatSubmitForm.setString(6, refProcedureInstallationTextField.getText());
+
+        myPrepStatSubmitForm.setString(7, getSelectedButtonText(validationButtonGroup));
+
+        if (dateValidationPicker.getModel().getValue() == null) {
+            myPrepStatSubmitForm.setNull(8, Types.DATE);
+        } else {
+            Date dateValidation = (Date) dateValidationPicker.getModel().getValue();
+            java.sql.Date dateValidationSQLDate = new java.sql.Date(dateValidation.getTime());
+            myPrepStatSubmitForm.setDate(8, dateValidationSQLDate);
         }
 
-        public void removeUpdate(DocumentEvent e) {
-            validation();
-        }
+        String codeSoftwareSQLInstruction = "SELECT CodeSoftware FROM Software WHERE Nom = ?;";
+        PreparedStatement codeSoftwarePrepStat = connection.prepareStatement(codeSoftwareSQLInstruction);
+        String codeSoftwareSelectedItem = ((JTextField) codeSoftwareComboBox.getEditor().getEditorComponent())
+                .getText();
+        codeSoftwarePrepStat.setString(1, codeSoftwareSelectedItem);
+        Object[] codeSoftwareSQLResult = AccessBDGen.creerListe1Colonne(codeSoftwarePrepStat);
+        myPrepStatSubmitForm.setString(9, (String) codeSoftwareSQLResult[0]);
 
-        public void insertUpdate(DocumentEvent e) {
-            validation();
+        String matriculeSQLInstruction = "SELECT Matricule FROM ResponsableReseaux WHERE NomPrenom = ?;";
+        PreparedStatement matriculePrepStat = connection.prepareStatement(matriculeSQLInstruction);
+        String matriculeSelectedItem = ((JTextField) matriculeComboBox.getEditor().getEditorComponent()).getText();
+        matriculePrepStat.setString(1, matriculeSelectedItem);
+        Object[] matriculeSQLResult = AccessBDGen.creerListe1Colonne(matriculePrepStat);
+        myPrepStatSubmitForm.setString(10, (String) matriculeSQLResult[0]);
+
+        String codeOSSQLInstruction = "SELECT CodeOS FROM OS WHERE Libelle = ?;";
+        PreparedStatement codeOSPrepStat = connection.prepareStatement(codeOSSQLInstruction);
+        String codeOSSelectedItem = ((JTextField) codeOSComboBox.getEditor().getEditorComponent()).getText();
+        codeOSPrepStat.setString(1, codeOSSelectedItem);
+        Object[] codeOSSQLResult = AccessBDGen.creerListe1Colonne(codeOSPrepStat);
+        myPrepStatSubmitForm.setString(11, (String) codeOSSQLResult[0]);
+
+        myPrepStatSubmitForm.executeUpdate();
+    }
+
+    private class validationActionManager implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            validateElements();
         }
 
     }
 
-    private boolean validation() {
-        StringBuilder errorText = new StringBuilder();
-
-        JTextField[] requiredTextFields = new JTextField[] { refProcedureInstallationTextField };
-        for (JTextField requiredTextField : requiredTextFields) {
-            if (requiredTextField.getText().length() == 0) {
-                requiredTextField.setBackground(Color.red);
-            } else {
-                requiredTextField.setBackground(null);
-            }
-        }
+    private boolean validateElements() {
+        Boolean areRequiredElementsCompleted = true;
 
         JComboBox[] requiredComboBoxes = new JComboBox[] { typeInstallationComboBox, codeSoftwareComboBox,
                 matriculeComboBox, codeOSComboBox };
         for (JComboBox requiredComboBox : requiredComboBoxes) {
-            if (((JTextField)requiredComboBox.getEditor().getEditorComponent()).getText().length() == 0) {
+            if (((JTextField) requiredComboBox.getEditor().getEditorComponent()).getText().length() == 0) {
                 requiredComboBox.setBackground(Color.red);
+                areRequiredElementsCompleted = false;
             } else {
                 requiredComboBox.setBackground(null);
             }
-            // if (requiredComboBox.getSelectedItem() == null) {
-            //     requiredComboBox.setBackground(Color.red);
-            // } else {
-            //     requiredComboBox.setBackground(null);
-            // }
         }
 
-        // Show the errorText in a message box, or in a label, or ...
+        if (dateInstallationPicker.getJFormattedTextField().getText() != null
+                && dateInstallationPicker.getJFormattedTextField().getText().isEmpty()) {
+            dateInstallationPicker.getJFormattedTextField().setBackground(Color.red);
+            areRequiredElementsCompleted = false;
+        } else {
+            dateInstallationPicker.getJFormattedTextField().setBackground(null);
+        }
 
-        return errorText.length() == 0;
+        if (getSelectedButtonText(validationButtonGroup) == null) {
+            validationButtonPanel.setBackground(Color.red);
+            areRequiredElementsCompleted = false;
+        } else {
+            validationButtonPanel.setBackground(null);
+        }
+
+        return areRequiredElementsCompleted;
     }
 
     private KeyListener refProcedureInstallationKeyListener = new KeyListener() {
@@ -245,4 +336,16 @@ public class NewInstallationPanel extends JPanel {
             }
         }
     };
+
+    public String getSelectedButtonText(ButtonGroup buttonGroup) {
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+
+        return null;
+    }
 }
