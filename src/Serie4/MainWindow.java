@@ -53,6 +53,7 @@ public class MainWindow extends JFrame {
 
         cont.add(welcomePanel);
         setVisible(true);
+        setResizable(false);
 
         actionManager actionListener = new actionManager();
         menuHelpAbout.addActionListener(actionListener);
