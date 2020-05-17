@@ -47,6 +47,7 @@ public class NewInstallationPanel extends JPanel {
     private validationActionManager validationActionListener = new validationActionManager();
     private JSpinner timeSpinner;
     private JSpinner.DateEditor timeEditor;
+    private String[] options = { "Oui", "Non" };
     private Connection connection;
 
     public NewInstallationPanel(Connection connection) throws SQLException {
@@ -178,14 +179,18 @@ public class NewInstallationPanel extends JPanel {
                 else
                     System.out.println("Manque des éléments");
             } else if (e.getSource() == cancelButton) {
-                removeAll();
-                try {
-                    addElements();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous réinitialiser tous les champs?","", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
+                if(confirmDialog == 0){
+                    removeAll();
+                    try {
+                        addElements();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    revalidate();
+                    repaint();
                 }
-                revalidate();
-                repaint();
+
             }
         }
 
