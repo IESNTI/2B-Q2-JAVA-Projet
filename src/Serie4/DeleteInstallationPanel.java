@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DeleteInstallationPanel extends JPanel {
-    private JLabel welcomeLabel,dummyLabel;
+    private JLabel chooseOneLabel,deleteLabel,dummyLabel;
     private JButton findButton, deleteButton;
     private JTextField installationToDelete;
     public JTable myTable;
@@ -28,11 +28,12 @@ public class DeleteInstallationPanel extends JPanel {
         setLayout(new FlowLayout(FlowLayout.CENTER));
         this.connection = connection;
 
-        welcomeLabel = new JLabel("Bienvenue dans le deletage");
+        chooseOneLabel = new JLabel("Choisissez l'année et l'option à rechercher");
         dummyLabel = new JLabel("empty");
-        add(welcomeLabel);
+        add(chooseOneLabel);
 
         findButton = new JButton("Rechercher");
+        deleteLabel = new JLabel("Veillez encoder le numéro d'idInstallation à supprimer :   ");
         installationToDelete = new JTextField(4);
         installationToDelete.setPreferredSize(new Dimension(500, 30));
         installationToDelete.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -64,10 +65,7 @@ public class DeleteInstallationPanel extends JPanel {
     private class ScrollPaneManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
            codeSoftwareInput = myTable.getValueAt(myTable.getSelectedRow(),0).toString();
-            JOptionPane.showConfirmDialog(null, "You Selected : " + codeSoftwareInput, "Display",
-                    JOptionPane.PLAIN_MESSAGE);
-
-            SQLRequest(codeSoftwareInput);
+           SQLRequest(codeSoftwareInput);
 
         }
     }
@@ -99,6 +97,7 @@ public class DeleteInstallationPanel extends JPanel {
             JScrollPane SQLtableX = new JScrollPane(myTable);
             SQLtableX.setPreferredSize(new Dimension(970, 300));
             add(SQLtableX);
+            add(deleteLabel);
             add(installationToDelete);
             add(deleteButton);
             revalidate();
