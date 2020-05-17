@@ -173,9 +173,9 @@ public class NewInstallationPanel extends JPanel {
                 if (validateElements())
                     submitForm();
                 else
-                    System.out.println("Manque des éléments");
+                    JOptionPane.showMessageDialog(null,"Veuillez vérifier que vous avez bien rempli tous les champs requis (en rouge).","", JOptionPane.INFORMATION_MESSAGE,null);
             } else if (e.getSource() == cancelButton) {
-                int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous réinitialiser tous les champs?","", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
+                int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous réinitialiser tous les champs?","", 0,JOptionPane.WARNING_MESSAGE,null,options,null);
                 if(confirmDialog == 0){
                     removeAll();
                     try {
