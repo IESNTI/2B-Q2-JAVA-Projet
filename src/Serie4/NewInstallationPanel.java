@@ -270,6 +270,7 @@ public class NewInstallationPanel extends JPanel {
             myPrepStatSubmitForm.setString(11, (String) codeOSSQLResult[0]);
 
             myPrepStatSubmitForm.executeUpdate();
+            JOptionPane.showMessageDialog(null,"Vos changements ont bien été effectués !","", JOptionPane.INFORMATION_MESSAGE,null);
             refreshPanel();
         } catch (SQLException e) {
             // print message d'erreur
