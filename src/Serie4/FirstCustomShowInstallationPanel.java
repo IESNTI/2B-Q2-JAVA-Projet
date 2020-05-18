@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
-public class CustomShowInstallationPanel extends JPanel {
+public class FirstCustomShowInstallationPanel extends JPanel {
     private JLabel dummyLabel,tableSoftLabel,dateInstallationLabel;
     private JButton findButton;
     private UtilDateModel dateInstallationModel;
@@ -31,7 +31,7 @@ public class CustomShowInstallationPanel extends JPanel {
 
     private Connection connection;
 
-    public CustomShowInstallationPanel(Connection connection) {
+    public FirstCustomShowInstallationPanel(Connection connection) {
         this.connection = connection;
         setLayout(new FlowLayout(FlowLayout.LEFT));
         //welcomeLabel = new JLabel("Bienvenue dans la recherche custom des install");

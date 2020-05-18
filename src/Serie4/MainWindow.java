@@ -1,12 +1,10 @@
 package Serie4;
 
 import accessBD.AccessBDGen;
-import accessBD.TableModelGen;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.*;
 
@@ -18,7 +16,10 @@ public class MainWindow extends JFrame {
     private WelcomePanel welcomePanel = new WelcomePanel(connection);
     private NewInstallationPanel newInstallationPanel = new NewInstallationPanel(connection);
     private ShowInstallationPanel showInstallationPanel = new ShowInstallationPanel(connection);
-    private CustomShowInstallationPanel customShowInstallationPanel = new CustomShowInstallationPanel(connection);
+    private FirstCustomShowInstallationPanel firstCustomShowInstallationPanel = new FirstCustomShowInstallationPanel(
+            connection);
+    private SecondCustomShowInstallationPanel secondCustomShowInstallationPanel = new SecondCustomShowInstallationPanel(
+            connection);
     private DeleteInstallationPanel deleteInstallationPanel = new DeleteInstallationPanel(connection);
     private JMenuBar bar = new JMenuBar();
     private JMenu menuInstallations = new JMenu("Installations");
@@ -26,7 +27,10 @@ public class MainWindow extends JFrame {
     private JMenuItem menuHelpAbout = new JMenuItem("A propos");
     private JMenuItem menuInstallationsNew = new JMenuItem("Nouvelle installation");
     private JMenuItem menuInstallationsShow = new JMenuItem("Afficher les installations");
-    private JMenuItem menuInstallationsCustomShow = new JMenuItem("Afficher les installations de façon custom");
+    private JMenuItem menuInstallationsFirstCustomShow = new JMenuItem(
+            "Afficher les installations de façon custom 1ère recherche");
+    private JMenuItem menuInstallationsSecondCustomShow = new JMenuItem(
+            "Afficher les installations de façon custom 2ème recherche");
     private JMenuItem menuInstallationsDelete = new JMenuItem("Supprimer des installations");
 
     public MainWindow() throws SQLException {
@@ -47,7 +51,8 @@ public class MainWindow extends JFrame {
         menuHelp.add(menuHelpAbout);
         menuInstallations.add(menuInstallationsNew);
         menuInstallations.add(menuInstallationsShow);
-        menuInstallations.add(menuInstallationsCustomShow);
+        menuInstallations.add(menuInstallationsFirstCustomShow);
+        menuInstallations.add(menuInstallationsSecondCustomShow);
         menuInstallations.add(menuInstallationsDelete);
         setJMenuBar(bar);
 
@@ -59,7 +64,8 @@ public class MainWindow extends JFrame {
         menuHelpAbout.addActionListener(actionListener);
         menuInstallationsNew.addActionListener(actionListener);
         menuInstallationsShow.addActionListener(actionListener);
-        menuInstallationsCustomShow.addActionListener(actionListener);
+        menuInstallationsFirstCustomShow.addActionListener(actionListener);
+        menuInstallationsSecondCustomShow.addActionListener(actionListener);
         menuInstallationsDelete.addActionListener(actionListener);
     }
 
@@ -81,8 +87,10 @@ public class MainWindow extends JFrame {
             } else if (e.getSource() == menuInstallationsShow) {
                 showInstallationPanel.SQLRequest("Installation");
                 switchPanel(showInstallationPanel);
-            } else if (e.getSource() == menuInstallationsCustomShow) {
-                switchPanel(customShowInstallationPanel);
+            } else if (e.getSource() == menuInstallationsFirstCustomShow) {
+                switchPanel(firstCustomShowInstallationPanel);
+            } else if (e.getSource() == menuInstallationsSecondCustomShow) {
+                switchPanel(secondCustomShowInstallationPanel);
             } else if (e.getSource() == menuInstallationsDelete) {
                 switchPanel(deleteInstallationPanel);
             }
