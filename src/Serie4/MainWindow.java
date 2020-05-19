@@ -9,32 +9,34 @@ import java.sql.SQLException;
 import javax.swing.*;
 
 public class MainWindow extends JFrame {
-    // Etablir la connexion ("le câble qui relie le programme Java à la BD")
+    private static final Connection MainWindow = null;
+
     private Connection connection = AccessBDGen.connecter("DbInstallations", "java", "b88iBowEv5te");
 
     private Container cont = getContentPane();
-    private WelcomePanel welcomePanel = new WelcomePanel(connection);
+    private JMenuBar bar = new JMenuBar();
+
+    private JMenu menuModifyInstallations = new JMenu("Modifier les installations");
+    private JMenu menuSearch = new JMenu("Recherche");
+    private JMenu menuHelp = new JMenu("Aide");
+    private JMenuItem menuHelpAbout = new JMenuItem("A propos");
+    private JMenuItem menuModifyInstallationsNew = new JMenuItem("Nouvelle installation");
+    private JMenuItem menuSearchShowTables = new JMenuItem("Recherche dans toutes les tables");
+    private JMenuItem mmenuSearchFirstCustomShow = new JMenuItem("1ère recherche personnalisée");
+    private JMenuItem menuSearchSecondCustomShow = new JMenuItem("2ème recherche personnalisée");
+    private JMenuItem menuModifyInstallationsDelete = new JMenuItem("Supprimer des installations");
+    private WelcomePanel welcomePanel = new WelcomePanel(MainWindow);
+    private ConnectionPanel connectionPanel = new ConnectionPanel(connection, bar, cont, welcomePanel);
     private NewInstallationPanel newInstallationPanel = new NewInstallationPanel(connection);
-    private ShowInstallationPanel showInstallationPanel = new ShowInstallationPanel(connection);
+    private ShowTablesPanel showTablesPanel = new ShowTablesPanel(connection);
     private FirstCustomShowInstallationPanel firstCustomShowInstallationPanel = new FirstCustomShowInstallationPanel(
             connection);
     private SecondCustomShowInstallationPanel secondCustomShowInstallationPanel = new SecondCustomShowInstallationPanel(
             connection);
     private DeleteInstallationPanel deleteInstallationPanel = new DeleteInstallationPanel(connection);
-    private JMenuBar bar = new JMenuBar();
-    private JMenu menuInstallations = new JMenu("Installations");
-    private JMenu menuHelp = new JMenu("Aide");
-    private JMenuItem menuHelpAbout = new JMenuItem("A propos");
-    private JMenuItem menuInstallationsNew = new JMenuItem("Nouvelle installation");
-    private JMenuItem menuInstallationsShow = new JMenuItem("Afficher les installations");
-    private JMenuItem menuInstallationsFirstCustomShow = new JMenuItem(
-            "Afficher les installations de façon custom 1ère recherche");
-    private JMenuItem menuInstallationsSecondCustomShow = new JMenuItem(
-            "Afficher les installations de façon custom 2ème recherche");
-    private JMenuItem menuInstallationsDelete = new JMenuItem("Supprimer des installations");
 
     public MainWindow() throws SQLException {
-        super("Formulaire de DB");
+        super("Gestion des installations de logiciels");
         setMinimumSize(new Dimension(1000, 800));
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -42,31 +44,31 @@ public class MainWindow extends JFrame {
             }
         });
 
-        // Centers the display window
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        setLocationRelativeTo(null);
 
-        bar.add(menuInstallations);
+        bar.add(menuModifyInstallations);
+        bar.add(menuSearch);
         bar.add(menuHelp);
+        bar.setVisible(false);
+        menuModifyInstallations.add(menuModifyInstallationsNew);
+        menuModifyInstallations.add(menuModifyInstallationsDelete);
+        menuSearch.add(menuSearchShowTables);
+        menuSearch.add(mmenuSearchFirstCustomShow);
+        menuSearch.add(menuSearchSecondCustomShow);
         menuHelp.add(menuHelpAbout);
-        menuInstallations.add(menuInstallationsNew);
-        menuInstallations.add(menuInstallationsShow);
-        menuInstallations.add(menuInstallationsFirstCustomShow);
-        menuInstallations.add(menuInstallationsSecondCustomShow);
-        menuInstallations.add(menuInstallationsDelete);
         setJMenuBar(bar);
 
-        cont.add(welcomePanel);
+        cont.add(connectionPanel);
         setVisible(true);
         setResizable(false);
 
         actionManager actionListener = new actionManager();
+        menuModifyInstallationsNew.addActionListener(actionListener);
+        menuModifyInstallationsDelete.addActionListener(actionListener);
+        menuSearchShowTables.addActionListener(actionListener);
+        mmenuSearchFirstCustomShow.addActionListener(actionListener);
+        menuSearchSecondCustomShow.addActionListener(actionListener);
         menuHelpAbout.addActionListener(actionListener);
-        menuInstallationsNew.addActionListener(actionListener);
-        menuInstallationsShow.addActionListener(actionListener);
-        menuInstallationsFirstCustomShow.addActionListener(actionListener);
-        menuInstallationsSecondCustomShow.addActionListener(actionListener);
-        menuInstallationsDelete.addActionListener(actionListener);
     }
 
     private void switchPanel(JPanel panel) {
@@ -82,16 +84,16 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == menuHelpAbout) {
                 new AboutWindow();
-            } else if (e.getSource() == menuInstallationsNew) {
+            } else if (e.getSource() == menuModifyInstallationsNew) {
                 switchPanel(newInstallationPanel);
-            } else if (e.getSource() == menuInstallationsShow) {
-                showInstallationPanel.SQLRequest("Installation");
-                switchPanel(showInstallationPanel);
-            } else if (e.getSource() == menuInstallationsFirstCustomShow) {
+            } else if (e.getSource() == menuSearchShowTables) {
+                showTablesPanel.SQLRequest("Installation");
+                switchPanel(showTablesPanel);
+            } else if (e.getSource() == mmenuSearchFirstCustomShow) {
                 switchPanel(firstCustomShowInstallationPanel);
-            } else if (e.getSource() == menuInstallationsSecondCustomShow) {
+            } else if (e.getSource() == menuSearchSecondCustomShow) {
                 switchPanel(secondCustomShowInstallationPanel);
-            } else if (e.getSource() == menuInstallationsDelete) {
+            } else if (e.getSource() == menuModifyInstallationsDelete) {
                 switchPanel(deleteInstallationPanel);
             }
         }

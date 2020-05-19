@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import javax.swing.*;
 import java.sql.Connection;
 
-public class ShowInstallationPanel extends JPanel {
+public class ShowTablesPanel extends JPanel {
     private JLabel changeTableLabel;
     private String[] tables = { "Installation", "AnneeEtude", "Software", "Editeur", "FamilleSoftware", "Fournisseur",
             "OS", "Professeur", "ResponsableReseaux", "Section", "SoftwarePreinstalle", "TypePC",
@@ -23,7 +23,7 @@ public class ShowInstallationPanel extends JPanel {
 
     private Connection connection;
 
-    public ShowInstallationPanel(Connection connection) {
+    public ShowTablesPanel(Connection connection) {
         this.connection = connection;
         setLayout(new FlowLayout(FlowLayout.CENTER));
 
