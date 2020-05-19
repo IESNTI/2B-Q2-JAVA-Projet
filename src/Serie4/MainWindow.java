@@ -22,7 +22,7 @@ public class MainWindow extends JFrame {
     private JMenuItem menuHelpAbout = new JMenuItem("A propos");
     private JMenuItem menuModifyInstallationsNew = new JMenuItem("Nouvelle installation");
     private JMenuItem menuSearchShowTables = new JMenuItem("Recherche dans toutes les tables");
-    private JMenuItem mmenuSearchFirstCustomShow = new JMenuItem("1ère recherche personnalisée");
+    private JMenuItem menuSearchFirstCustomShow = new JMenuItem("1ère recherche personnalisée");
     private JMenuItem menuSearchSecondCustomShow = new JMenuItem("2ème recherche personnalisée");
     private JMenuItem menuModifyInstallationsDelete = new JMenuItem("Supprimer des installations");
     private WelcomePanel welcomePanel = new WelcomePanel(MainWindow);
@@ -53,7 +53,7 @@ public class MainWindow extends JFrame {
         menuModifyInstallations.add(menuModifyInstallationsNew);
         menuModifyInstallations.add(menuModifyInstallationsDelete);
         menuSearch.add(menuSearchShowTables);
-        menuSearch.add(mmenuSearchFirstCustomShow);
+        menuSearch.add(menuSearchFirstCustomShow);
         menuSearch.add(menuSearchSecondCustomShow);
         menuHelp.add(menuHelpAbout);
         setJMenuBar(bar);
@@ -66,7 +66,7 @@ public class MainWindow extends JFrame {
         menuModifyInstallationsNew.addActionListener(actionListener);
         menuModifyInstallationsDelete.addActionListener(actionListener);
         menuSearchShowTables.addActionListener(actionListener);
-        mmenuSearchFirstCustomShow.addActionListener(actionListener);
+        menuSearchFirstCustomShow.addActionListener(actionListener);
         menuSearchSecondCustomShow.addActionListener(actionListener);
         menuHelpAbout.addActionListener(actionListener);
     }
@@ -87,9 +87,9 @@ public class MainWindow extends JFrame {
             } else if (e.getSource() == menuModifyInstallationsNew) {
                 switchPanel(newInstallationPanel);
             } else if (e.getSource() == menuSearchShowTables) {
-                showTablesPanel.SQLRequest("Installation");
+                showTablesPanel.sqlRequest("Installation");
                 switchPanel(showTablesPanel);
-            } else if (e.getSource() == mmenuSearchFirstCustomShow) {
+            } else if (e.getSource() == menuSearchFirstCustomShow) {
                 switchPanel(firstCustomShowInstallationPanel);
             } else if (e.getSource() == menuSearchSecondCustomShow) {
                 switchPanel(secondCustomShowInstallationPanel);

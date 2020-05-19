@@ -2,9 +2,6 @@ package Serie4;
 
 import accessBD.AccessBDGen;
 import accessBD.TableModelGen;
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,19 +10,13 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import javax.swing.JFormattedTextField.AbstractFormatter;
 
 public class SecondCustomShowInstallationPanel extends JPanel {
     private JLabel dummyLabel,editorTableLabel;
     private JButton findButton;
     private JTable editorTable,requestTable;
-    private JScrollPane SQLtable;
 
-    private validationActionManager findButtonListener = new validationActionManager();
+    private ValidationActionManager findButtonListener = new ValidationActionManager();
 
     private Connection connection;
 
@@ -36,41 +27,41 @@ public class SecondCustomShowInstallationPanel extends JPanel {
         editorTableLabel = new JLabel("Sélectionnez un éditeur à chercher : ");
         add(editorTableLabel);
 
-        EditorRequest();
+        editorRequest();
 
         findButton = new JButton("Rechercher");
         findButton.addActionListener(findButtonListener);
         add(findButton);
 
-        AddsDummyLabel();
+        addDummyLabel();
     }
 
-    private class validationActionManager implements ActionListener {
+    private class ValidationActionManager implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             String editorInput = editorTable.getValueAt(editorTable.getSelectedRow(), 0).toString();
             String instruction = "SELECT * FROM Software WHERE CodeEdit = '" + editorInput + "'";
-            SQLRequest(instruction, 900, 300);
+            sqlRequest(instruction, 900, 300);
         }
     }
 
-    public void EditorRequest(){
+    public void editorRequest(){
         try {
             String sqlInstruction = "SELECT CodeEdit,Designation FROM Editeur;";
             PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             editorTable = new JTable(GenericModel);
-            JScrollPane SQLtable = new JScrollPane(editorTable);
-            SQLtable.setPreferredSize(new Dimension(450, 230));
+            JScrollPane sqlTable = new JScrollPane(editorTable);
+            sqlTable.setPreferredSize(new Dimension(450, 230));
             hideColumn(editorTable);
-            add(SQLtable);
+            add(sqlTable);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void SQLRequest(String instruction, int w, int h)
+    public void sqlRequest(String instruction, int w, int h)
     {
         try {
             // Requests and shows SQL table
@@ -79,9 +70,9 @@ public class SecondCustomShowInstallationPanel extends JPanel {
             PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             requestTable = new JTable(GenericModel);
-            JScrollPane SQLtableX = new JScrollPane(requestTable);
-            SQLtableX.setPreferredSize(new Dimension(w, h));
-            add(SQLtableX);
+            JScrollPane sqlTableX = new JScrollPane(requestTable);
+            sqlTableX.setPreferredSize(new Dimension(w, h));
+            add(sqlTableX);
             revalidate();
             repaint();
         } catch (SQLException e) {
@@ -96,7 +87,7 @@ public class SecondCustomShowInstallationPanel extends JPanel {
         table.getColumnModel().getColumn(0).setResizable(false);
     }
 
-    public void AddsDummyLabel(){
+    public void addDummyLabel(){
         dummyLabel = new JLabel("empty");
         dummyLabel.setVisible(false);
         add(dummyLabel);

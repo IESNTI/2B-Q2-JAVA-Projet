@@ -18,7 +18,6 @@ public class ShowTablesPanel extends JPanel {
 
     private JButton findButton;
     private JTable requestTable,showTablesTable;
-    private JScrollPane SQLtable;
 
     private ValidationActionManager searchButtonListener = new ValidationActionManager();
 
@@ -31,46 +30,46 @@ public class ShowTablesPanel extends JPanel {
         changeTableLabel = new JLabel("Changer de table :");
         add(changeTableLabel);
 
-        GetTablesInDB();
+        getTablesInDB();
         findButton = new JButton("Rechercher");
         findButton.addActionListener(searchButtonListener);
         add(findButton);
 
-        AddsDummyLabel();
+        addDummyLabel();
     }
 
     // Reads and updates table on ComboBox input
     private class ValidationActionManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String tableInput = showTablesTable.getValueAt(showTablesTable.getSelectedRow(),0).toString();
-            SQLRequest(tableInput);
+            sqlRequest(tableInput);
         }
     }
 
-    public void GetTablesInDB(){
+    public void getTablesInDB(){
         try {
             PreparedStatement showTablePrepStat = connection.prepareStatement(showTables);
             TableModelGen showTableModel = AccessBDGen.creerTableModel(showTablePrepStat);
             showTablesTable = new JTable(showTableModel);
-            JScrollPane SQLtables = new JScrollPane(showTablesTable);
-            SQLtables.setPreferredSize(new Dimension(900, 300));
-            add(SQLtables);
+            JScrollPane sqlTables = new JScrollPane(showTablesTable);
+            sqlTables.setPreferredSize(new Dimension(900, 300));
+            add(sqlTables);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     // Requests table on string input
-    public void SQLRequest(String table) {
+    public void sqlRequest(String table) {
         try {
             remove(getComponent(3));
             String sqlInstruction = "select * from " + table + ";";
             PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             requestTable = new JTable(GenericModel);
-            JScrollPane SQLtableX = new JScrollPane(requestTable);
-            SQLtableX.setPreferredSize(new Dimension(900, 300));
-            add(SQLtableX);
+            JScrollPane sqlTableX = new JScrollPane(requestTable);
+            sqlTableX.setPreferredSize(new Dimension(900, 300));
+            add(sqlTableX);
             revalidate();
             repaint();
         } catch (SQLException e) {
@@ -78,7 +77,7 @@ public class ShowTablesPanel extends JPanel {
         }
     }
 
-    public void AddsDummyLabel(){
+    public void addDummyLabel(){
         dummyLabel = new JLabel("empty");
         dummyLabel.setVisible(false);
         add(dummyLabel);

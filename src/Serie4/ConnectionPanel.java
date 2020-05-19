@@ -27,8 +27,7 @@ public class ConnectionPanel extends JPanel {
     private Container cont;
     WelcomePanel welcomePanel;
 
-    public ConnectionPanel(Connection connection, JMenuBar bar, Container cont, WelcomePanel welcomePanel)
-            throws SQLException {
+    public ConnectionPanel(Connection connection, JMenuBar bar, Container cont, WelcomePanel welcomePanel) {
         this.connection = connection;
         this.bar = bar;
         this.cont = cont;
@@ -37,7 +36,7 @@ public class ConnectionPanel extends JPanel {
         addElements();
     }
 
-    void addElements() throws SQLException {
+    void addElements() {
         northPanel = new JPanel();
         northPanel.setLayout(new GridLayout(2, 1));
         centerPanel = new JPanel();
@@ -117,11 +116,7 @@ public class ConnectionPanel extends JPanel {
 
     void refreshPanel() {
         removeAll();
-        try {
-            addElements();
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
+        addElements();
         revalidate();
         repaint();
     }
