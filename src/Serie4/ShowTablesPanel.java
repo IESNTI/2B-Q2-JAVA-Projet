@@ -13,12 +13,11 @@ import javax.swing.*;
 import java.sql.Connection;
 
 public class ShowTablesPanel extends JPanel {
-    private JLabel changeTableLabel;
-    private String[] tables = { "Installation", "AnneeEtude", "Software", "Editeur", "FamilleSoftware", "Fournisseur",
-            "OS", "Professeur", "ResponsableReseaux", "Section", "SoftwarePreinstalle", "TypePC",
-            "UtilisationSoftware" };
-    private JComboBox tableSelect;
-    private JTable myTable;
+    private JLabel dummyLabel,changeTableLabel;
+    private String showTables = "SHOW TABLES";
+
+    private JButton findButton;
+    private JTable requestTable,showTablesTable;
     private JScrollPane SQLtable;
 
     private ValidationActionManager searchButtonListener = new ValidationActionManager();
