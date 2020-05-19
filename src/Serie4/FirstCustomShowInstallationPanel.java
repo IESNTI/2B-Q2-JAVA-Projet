@@ -82,17 +82,18 @@ public class FirstCustomShowInstallationPanel extends JPanel {
                     "RefProcedureInstallation,Validation,DateValidation,Matricule,CodeOS,idFamSoft FROM Installation " +
                     "JOIN Software ON Installation.CodeSoftware=Software.CodeSoftware " +
                     "WHERE idFamSoft = " + idFamSoftLibelleInput ;
-            SQLRequest(instruction,900,300);
+            SQLRequest(instruction,900,300,dateInstallationSQLDate);
         }
 
     }
-    public void SQLRequest(String instruction, int w, int h)
+    public void SQLRequest(String instruction, int w, int h,Date date)
     {
         try {
             // Requests and shows SQL table
             remove(getComponent(7));
-            String sqlInstruction = instruction + ";";
+            String sqlInstruction = instruction + " AND DateInstallation < ? ;";
             PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
+            prepStat.setDate(1, new java.sql.Date(date.getTime()));
             TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
             requestTable = new JTable(GenericModel);
             JScrollPane SQLtableX = new JScrollPane(requestTable);
