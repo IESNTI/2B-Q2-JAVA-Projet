@@ -22,11 +22,14 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 public class FirstCustomShowInstallationPanel extends JPanel {
     private JLabel dummyLabel,tableSoftLabel,dateInstallationLabel;
     private JButton findButton;
+
     private UtilDateModel dateInstallationModel;
     private JDatePanelImpl dateInstallationPanel;
     private JDatePickerImpl dateInstallationPicker;
+
     private JTable softFamTable,requestTable;
     private JScrollPane SQLtable;
+
     private validationActionManager findButtonListener = new validationActionManager();
 
     private Connection connection;
@@ -63,6 +66,7 @@ public class FirstCustomShowInstallationPanel extends JPanel {
             softFamTable = new JTable(GenericModel);
             JScrollPane SQLtable = new JScrollPane(softFamTable);
             SQLtable.setPreferredSize(new Dimension(450, 230));
+            hideColumn(softFamTable);
             add(SQLtable);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -105,5 +109,11 @@ public class FirstCustomShowInstallationPanel extends JPanel {
             System.out.println(e.getMessage());
         }
 
+    }
+
+    public void hideColumn(JTable table){
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setResizable(false);
     }
 }
