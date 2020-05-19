@@ -102,6 +102,7 @@ public class NewInstallationPanel extends JPanel {
         for (int i = 0; i < validationButtonList.length; i++) {
             JRadioButton validationButton = new JRadioButton(validationButtonList[i]);
             validationButton.addActionListener(validationActionListener);
+            validationButton.addActionListener(actionListener);
             validationButtonGroup.add(validationButton);
             validationButtonPanel.add(validationButton);
         }
@@ -112,6 +113,7 @@ public class NewInstallationPanel extends JPanel {
         dateValidationModel = new UtilDateModel();
         dateValidationPanel = new JDatePanelImpl(dateValidationModel);
         dateValidationPicker = new JDatePickerImpl(dateValidationPanel);
+        dateValidationPicker.getComponent(1).setEnabled(false);
         add(dateValidationPicker);
 
         codeSoftwareLabel = new JLabel("Logiciel (requis) : ");
@@ -173,6 +175,11 @@ public class NewInstallationPanel extends JPanel {
                     refreshPanel();
                 }
 
+            }
+            if (getSelectedButtonText(validationButtonGroup).equals("A prevoir")) {
+                dateValidationPicker.getComponent(1).setEnabled(true);
+            } else if (!getSelectedButtonText(validationButtonGroup).equals("A prevoir")) {
+                dateValidationPicker.getComponent(1).setEnabled(false);
             }
         }
 
