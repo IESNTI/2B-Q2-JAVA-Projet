@@ -18,49 +18,33 @@ public class DeleteInstallationPanel extends JPanel {
     public JTable myTable;
     private JScrollPane SQLtable;
 
-    private Connection connection;
+    private ScrollPaneManager SPmanager = new ScrollPaneManager();
+    private DeleteButtonManager DelBmanager = new DeleteButtonManager();
 
     public String codeSoftwareInput;
-
     private String[] options = { "Oui", "Non" };
+
+    private Connection connection;
 
     public DeleteInstallationPanel(Connection connection) {
         setLayout(new FlowLayout(FlowLayout.CENTER));
         this.connection = connection;
 
         chooseOneLabel = new JLabel("Choisissez l'année et l'option à rechercher");
-        dummyLabel = new JLabel("empty");
         add(chooseOneLabel);
 
         findButton = new JButton("Rechercher");
+        findButton.addActionListener(SPmanager);
+
         deleteLabel = new JLabel("Veillez encoder le numéro d'idInstallation à supprimer :   ");
         installationToDelete = new JTextField(4);
         installationToDelete.setPreferredSize(new Dimension(500, 30));
         installationToDelete.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+
         deleteButton = new JButton("Supprimer");
-
-        try {
-            String sqlInstruction = "SELECT CodeSoftware,Annee,CodeSection from AnneeEtude JOIN UtilisationSoftware ON AnneeEtude.IdAnneeEtude=UtilisationSoftware.IdAnneeEtude;";
-            PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
-            TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
-            myTable = new JTable(GenericModel);
-            SQLtable = new JScrollPane(myTable);
-            SQLtable.setPreferredSize(new Dimension(970, 300));
-            add(SQLtable);
-            add(findButton);
-            add(dummyLabel);
-            dummyLabel.setVisible(false);
-        }
-        catch (
-                SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        ScrollPaneManager SPmanager = new ScrollPaneManager();
-        findButton.addActionListener(SPmanager);
-
-        DeleteButtonManager DelBmanager = new DeleteButtonManager();
         deleteButton.addActionListener(DelBmanager);
+        CodeSoftwareRequest();
+
     }
     private class ScrollPaneManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -72,9 +56,9 @@ public class DeleteInstallationPanel extends JPanel {
 
     private class DeleteButtonManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-                int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous supprimer l'installation n°" + installationToDelete.getText()+ " ?","", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
-                if(confirmDialog == 0){
-                    try {
+            int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous supprimer l'installation n°" + installationToDelete.getText()+ " ?","", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
+            if(confirmDialog == 0){
+                try {
                     String sqlInstruction = ("DELETE FROM Installation WHERE idInstallation = "+ installationToDelete.getText() + ";");
                     PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
                     prepStat.execute();
@@ -86,6 +70,25 @@ public class DeleteInstallationPanel extends JPanel {
                 }
         }
     }
+
+    public void CodeSoftwareRequest(){
+        try {
+            String sqlInstruction = "SELECT CodeSoftware,Annee,CodeSection from AnneeEtude JOIN UtilisationSoftware ON AnneeEtude.IdAnneeEtude=UtilisationSoftware.IdAnneeEtude;";
+            PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
+            TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
+            myTable = new JTable(GenericModel);
+            SQLtable = new JScrollPane(myTable);
+            SQLtable.setPreferredSize(new Dimension(970, 300));
+            add(SQLtable);
+            add(findButton);
+            AddsDummyLabel();
+        }
+        catch (
+                SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void SQLRequest(String codeSoftwareInput) {
         try {
             remove(getComponent(3));
@@ -106,6 +109,10 @@ public class DeleteInstallationPanel extends JPanel {
             System.out.println(e.getMessage());
         }
     }
-    //TODO : SELECT IdInstallation,DateInstallation,Matricule,CodeSoftware FROM Installation choose and delete
 
+    public void AddsDummyLabel(){
+        dummyLabel = new JLabel("empty");
+        dummyLabel.setVisible(false);
+        add(dummyLabel);
+    }
 }

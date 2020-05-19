@@ -37,8 +37,7 @@ public class FirstCustomShowInstallationPanel extends JPanel {
     public FirstCustomShowInstallationPanel(Connection connection) {
         this.connection = connection;
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        //welcomeLabel = new JLabel("Bienvenue dans la recherche custom des install");
-        //add(welcomeLabel);
+
 
         dateInstallationLabel = new JLabel("Date de l'installation (requis) : ");
         dateInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -48,6 +47,7 @@ public class FirstCustomShowInstallationPanel extends JPanel {
         dateInstallationPanel = new JDatePanelImpl(dateInstallationModel);
         dateInstallationPicker = new JDatePickerImpl(dateInstallationPanel);
         add(dateInstallationPicker);
+
         add(Box.createRigidArea(new Dimension(120, 0)));
         findButton = new JButton("Rechercher");
         findButton.addActionListener(findButtonListener);
@@ -57,23 +57,10 @@ public class FirstCustomShowInstallationPanel extends JPanel {
 
         tableSoftLabel = new JLabel("Famille de software (requis) : ");
         add(tableSoftLabel);
-        //SQLRequest("SELECT * FROM FamilleSoftware",450,230,softFamTable);
-        try {
-            // Requests and shows SQL table
-            String sqlInstruction = "SELECT * FROM FamilleSoftware ;";
-            PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
-            TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
-            softFamTable = new JTable(GenericModel);
-            JScrollPane SQLtable = new JScrollPane(softFamTable);
-            SQLtable.setPreferredSize(new Dimension(450, 230));
-            hideColumn(softFamTable);
-            add(SQLtable);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        dummyLabel = new JLabel("empty");
-        dummyLabel.setVisible(false);
-        add(dummyLabel);
+
+        FamSoftRequest();
+
+        AddsDummyLabel();
 
     }
     private class validationActionManager implements ActionListener {
@@ -90,6 +77,23 @@ public class FirstCustomShowInstallationPanel extends JPanel {
         }
 
     }
+
+    public void FamSoftRequest(){
+        try {
+            // Requests and shows SQL table
+            String sqlInstruction = "SELECT * FROM FamilleSoftware ;";
+            PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
+            TableModelGen GenericModel = AccessBDGen.creerTableModel(prepStat);
+            softFamTable = new JTable(GenericModel);
+            JScrollPane SQLtable = new JScrollPane(softFamTable);
+            SQLtable.setPreferredSize(new Dimension(450, 230));
+            hideColumn(softFamTable);
+            add(SQLtable);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void SQLRequest(String instruction, int w, int h,Date date)
     {
         try {
@@ -115,5 +119,11 @@ public class FirstCustomShowInstallationPanel extends JPanel {
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setResizable(false);
+    }
+
+    public void AddsDummyLabel(){
+        dummyLabel = new JLabel("empty");
+        dummyLabel.setVisible(false);
+        add(dummyLabel);
     }
 }
