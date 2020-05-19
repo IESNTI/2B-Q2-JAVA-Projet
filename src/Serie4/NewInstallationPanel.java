@@ -169,17 +169,19 @@ public class NewInstallationPanel extends JPanel {
                             "Veuillez vérifier que vous avez bien rempli tous les champs requis (en rouge).", "",
                             JOptionPane.INFORMATION_MESSAGE, null);
             } else if (e.getSource() == cancelButton) {
-                int confirmDialog = JOptionPane.showOptionDialog(null, "Voulez vous réinitialiser tous les champs ?", "",
-                        0, JOptionPane.WARNING_MESSAGE, null, optionsCancelJOptionPane, null);
+                int confirmDialog = JOptionPane.showOptionDialog(null, "Voulez vous réinitialiser tous les champs ?",
+                        "", 0, JOptionPane.WARNING_MESSAGE, null, optionsCancelJOptionPane, null);
                 if (confirmDialog == 0) {
                     refreshPanel();
                 }
 
             }
-            if (getSelectedButtonText(validationButtonGroup).equals("A prevoir")) {
-                dateValidationPicker.getComponent(1).setEnabled(true);
-            } else if (!getSelectedButtonText(validationButtonGroup).equals("A prevoir")) {
-                dateValidationPicker.getComponent(1).setEnabled(false);
+            if (getSelectedButtonText(validationButtonGroup) != null) {
+                if (getSelectedButtonText(validationButtonGroup).equals("A prevoir")) {
+                    dateValidationPicker.getComponent(1).setEnabled(true);
+                } else if (!getSelectedButtonText(validationButtonGroup).equals("A prevoir")) {
+                    dateValidationPicker.getComponent(1).setEnabled(false);
+                }
             }
         }
 
