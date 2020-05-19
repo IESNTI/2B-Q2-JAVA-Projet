@@ -29,9 +29,9 @@ public class MainWindow extends JFrame {
     private ConnectionPanel connectionPanel = new ConnectionPanel(connection, bar, cont, welcomePanel);
     private NewInstallationPanel newInstallationPanel = new NewInstallationPanel(connection);
     private ShowTablesPanel showTablesPanel = new ShowTablesPanel(connection);
-    private FirstCustomShowInstallationPanel firstCustomShowInstallationPanel = new FirstCustomShowInstallationPanel(
+    private FirstCustomShowTablePanel firstCustomShowTablePanel = new FirstCustomShowTablePanel(
             connection);
-    private SecondCustomShowInstallationPanel secondCustomShowInstallationPanel = new SecondCustomShowInstallationPanel(
+    private SecondCustomShowTablePanel secondCustomShowTablePanel = new SecondCustomShowTablePanel(
             connection);
     private DeleteInstallationPanel deleteInstallationPanel = new DeleteInstallationPanel(connection);
 
@@ -90,9 +90,9 @@ public class MainWindow extends JFrame {
                 showTablesPanel.sqlRequest("Installation");
                 switchPanel(showTablesPanel);
             } else if (e.getSource() == menuSearchFirstCustomShow) {
-                switchPanel(firstCustomShowInstallationPanel);
+                switchPanel(firstCustomShowTablePanel);
             } else if (e.getSource() == menuSearchSecondCustomShow) {
-                switchPanel(secondCustomShowInstallationPanel);
+                switchPanel(secondCustomShowTablePanel);
             } else if (e.getSource() == menuModifyInstallationsDelete) {
                 switchPanel(deleteInstallationPanel);
             }

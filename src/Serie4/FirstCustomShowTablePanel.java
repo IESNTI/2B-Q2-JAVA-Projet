@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class FirstCustomShowInstallationPanel extends JPanel {
+public class FirstCustomShowTablePanel extends JPanel {
     private JLabel dummyLabel,tableSoftLabel,dateInstallationLabel;
     private JButton findButton;
 
@@ -29,7 +29,7 @@ public class FirstCustomShowInstallationPanel extends JPanel {
 
     private Connection connection;
 
-    public FirstCustomShowInstallationPanel(Connection connection) {
+    public FirstCustomShowTablePanel(Connection connection) {
         this.connection = connection;
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -62,13 +62,19 @@ public class FirstCustomShowInstallationPanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Date dateInstallationSQLDate = (Date) dateInstallationPicker.getModel().getValue();
-            String idFamSoftLibelleInput = softFamTable.getValueAt(softFamTable.getSelectedRow(),0).toString();
-            String instruction = "SELECT IdInstallation,DateInstallation,TypeInstallation,Commentaires,DureeInstallation," +
-                    "RefProcedureInstallation,Validation,DateValidation,Matricule,CodeOS,idFamSoft FROM Installation " +
-                    "JOIN Software ON Installation.CodeSoftware=Software.CodeSoftware " +
-                    "WHERE idFamSoft = " + idFamSoftLibelleInput ;
-            sqlRequest(instruction,900,300,dateInstallationSQLDate);
+            if(softFamTable.getSelectedRow() == -1 || dateInstallationPicker.getModel().getValue() == null)
+            {
+                JOptionPane.showConfirmDialog(null, "Veuillez remplir les critéres de recherche", "", JOptionPane.PLAIN_MESSAGE);
+            }
+            else {
+                Date dateInstallationSQLDate = (Date) dateInstallationPicker.getModel().getValue();
+                String idFamSoftLibelleInput = softFamTable.getValueAt(softFamTable.getSelectedRow(), 0).toString();
+                String instruction = "SELECT IdInstallation,DateInstallation,TypeInstallation,Commentaires,DureeInstallation," +
+                        "RefProcedureInstallation,Validation,DateValidation,Matricule,CodeOS,idFamSoft FROM Installation " +
+                        "JOIN Software ON Installation.CodeSoftware=Software.CodeSoftware " +
+                        "WHERE idFamSoft = " + idFamSoftLibelleInput;
+                sqlRequest(instruction, 900, 300, dateInstallationSQLDate);
+            }
         }
 
     }

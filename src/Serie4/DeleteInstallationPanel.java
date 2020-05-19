@@ -48,9 +48,14 @@ public class DeleteInstallationPanel extends JPanel {
     }
     private class ScrollPaneManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-           codeSoftwareInput = codeSoftwareTable.getValueAt(codeSoftwareTable.getSelectedRow(),0).toString();
-           sqlRequest(codeSoftwareInput);
-
+            if(codeSoftwareTable.getSelectedRow() == -1)
+            {
+                JOptionPane.showConfirmDialog(null, "Veuillez sélectionner un élément de la liste", "", JOptionPane.PLAIN_MESSAGE);
+            }
+            else {
+                codeSoftwareInput = codeSoftwareTable.getValueAt(codeSoftwareTable.getSelectedRow(), 0).toString();
+                sqlRequest(codeSoftwareInput);
+            }
         }
     }
 

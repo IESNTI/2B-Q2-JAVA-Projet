@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SecondCustomShowInstallationPanel extends JPanel {
+public class SecondCustomShowTablePanel extends JPanel {
     private JLabel dummyLabel,editorTableLabel;
     private JButton findButton;
     private JTable editorTable,requestTable;
@@ -20,7 +20,7 @@ public class SecondCustomShowInstallationPanel extends JPanel {
 
     private Connection connection;
 
-    public SecondCustomShowInstallationPanel(Connection connection) {
+    public SecondCustomShowTablePanel(Connection connection) {
         this.connection = connection;
         setLayout(new FlowLayout(FlowLayout.CENTER));
 
@@ -40,9 +40,15 @@ public class SecondCustomShowInstallationPanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String editorInput = editorTable.getValueAt(editorTable.getSelectedRow(), 0).toString();
-            String instruction = "SELECT * FROM Software WHERE CodeEdit = '" + editorInput + "'";
-            sqlRequest(instruction, 900, 300);
+            if(editorTable.getSelectedRow() == -1)
+            {
+                JOptionPane.showConfirmDialog(null, "Veuillez sélectionner un élément de la liste", "", JOptionPane.PLAIN_MESSAGE);
+            }
+            else {
+                String editorInput = editorTable.getValueAt(editorTable.getSelectedRow(), 0).toString();
+                String instruction = "SELECT * FROM Software WHERE CodeEdit = '" + editorInput + "'";
+                sqlRequest(instruction, 900, 300);
+            }
         }
     }
 

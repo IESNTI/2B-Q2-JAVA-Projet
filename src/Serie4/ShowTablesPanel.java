@@ -41,8 +41,14 @@ public class ShowTablesPanel extends JPanel {
     // Reads and updates table on ComboBox input
     private class ValidationActionManager implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            String tableInput = showTablesTable.getValueAt(showTablesTable.getSelectedRow(),0).toString();
-            sqlRequest(tableInput);
+            if(showTablesTable.getSelectedRow() == -1)
+            {
+                JOptionPane.showConfirmDialog(null, "Veuillez sélectionner un élément de la liste", "", JOptionPane.PLAIN_MESSAGE);
+            }
+            else {
+                String tableInput = showTablesTable.getValueAt(showTablesTable.getSelectedRow(), 0).toString();
+                sqlRequest(tableInput);
+            }
         }
     }
 
