@@ -62,8 +62,8 @@ public class DeleteInstallationPanel extends JPanel {
                     String sqlInstruction = ("DELETE FROM Installation WHERE idInstallation = "+ installationToDelete.getText() + ";");
                     PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
                     prepStat.execute();
-                        JOptionPane.showConfirmDialog(null, "La ligne a été effacée", "Display",
-                                JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showConfirmDialog(null, "La ligne a été effacée", "Display", JOptionPane.PLAIN_MESSAGE);
+                    SQLRequest(codeSoftwareInput);
                     } catch (SQLException o) {
                         System.out.println(o.getMessage());
                     }
