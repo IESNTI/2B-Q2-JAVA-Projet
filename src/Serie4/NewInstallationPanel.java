@@ -6,9 +6,7 @@ import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
+import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -43,23 +41,25 @@ public class NewInstallationPanel extends JPanel {
     private JDatePanelImpl dateInstallationPanel, dateValidationPanel;
     private JDatePickerImpl dateInstallationPicker, dateValidationPicker;
     ArrayList<String> typeInstallationArrayList = new ArrayList<String>(Arrays.asList("Standard", "Personnalisée"));
-    private actionManager actionListener = new actionManager();
-    private validationActionManager validationActionListener = new validationActionManager();
+    private ActionManager actionListener;
+    private ValidationActionManager validationActionListener;
     private JSpinner timeSpinner;
     private JSpinner.DateEditor timeEditor;
-    private String[] options = { "Oui", "Non" };
+    private String[] optionsCancelJOptionPane = { "Oui", "Non" };
     private Connection connection;
 
     public NewInstallationPanel(Connection connection) throws SQLException {
         this.connection = connection;
         setLayout(new GridLayout(12, 2));
-        setPreferredSize(new Dimension(400, 300));
+        setBorder(new EmptyBorder(100, 100, 100, 100));
         addElements();
     }
 
     void addElements() throws SQLException {
+        actionListener = new ActionManager();
+        validationActionListener = new ValidationActionManager();
+
         dateInstallationLabel = new JLabel("Date de l'installation (requis) : ");
-        // dateInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(dateInstallationLabel);
         dateInstallationModel = new UtilDateModel();
         dateInstallationPanel = new JDatePanelImpl(dateInstallationModel);
@@ -68,7 +68,6 @@ public class NewInstallationPanel extends JPanel {
         add(dateInstallationPicker);
 
         typeInstallationLabel = new JLabel("Type de l'installation (requis) : ");
-        // typeInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(typeInstallationLabel);
         typeInstallationComboBox = new JComboBox(typeInstallationArrayList.toArray());
         typeInstallationComboBox.setSelectedIndex(-1);
@@ -76,31 +75,26 @@ public class NewInstallationPanel extends JPanel {
         add(typeInstallationComboBox);
 
         commentairesLabel = new JLabel("Commentaires: ");
-        // commentairesLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(commentairesLabel);
         commentairesTextArea = new JTextArea(2, 2);
         commentairesTextArea.addKeyListener(commentairesKeyListener);
         add(commentairesTextArea);
 
         dureeInstallationLabel = new JLabel("Durée de l'installation (heure:minute) : ");
-        // dureeInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(dureeInstallationLabel);
         timeSpinner = new JSpinner(new SpinnerDateModel(new Date(0), null, null, Calendar.MINUTE));
         timeEditor = new JSpinner.DateEditor(timeSpinner, "hh:mm");
         timeSpinner.setEditor(timeEditor);
-        // timeSpinner.setValue(new Date(0));
         timeEditor.getTextField().setEditable(false);
         add(timeSpinner);
 
         refProcedureInstallationLabel = new JLabel("Référence de la procédure d'installation : ");
-        // refProcedureInstallationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(refProcedureInstallationLabel);
         refProcedureInstallationTextField = new JTextField(50);
         refProcedureInstallationTextField.addKeyListener(refProcedureInstallationKeyListener);
         add(refProcedureInstallationTextField);
 
         validationLabel = new JLabel("Validation (requis) : ");
-        // validationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(validationLabel);
         String validationButtonList[] = { "A prevoir", "Terminee", "En cours" };
         validationButtonGroup = new ButtonGroup();
@@ -114,7 +108,6 @@ public class NewInstallationPanel extends JPanel {
         add(validationButtonPanel);
 
         dateValidationLabel = new JLabel("Date de la validation : ");
-        // dateValidationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(dateValidationLabel);
         dateValidationModel = new UtilDateModel();
         dateValidationPanel = new JDatePanelImpl(dateValidationModel);
@@ -122,7 +115,6 @@ public class NewInstallationPanel extends JPanel {
         add(dateValidationPicker);
 
         codeSoftwareLabel = new JLabel("Logiciel (requis) : ");
-        // codeSoftwareLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(codeSoftwareLabel);
         String codeSoftwareSQLInstruction = "SELECT Nom FROM Software;";
         PreparedStatement codeSoftwarePrepStat = connection.prepareStatement(codeSoftwareSQLInstruction);
@@ -133,7 +125,6 @@ public class NewInstallationPanel extends JPanel {
         add(codeSoftwareComboBox);
 
         matriculeLabel = new JLabel("Matricule (requis) : ");
-        // matriculeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(matriculeLabel);
         String matriculeSQLInstruction = "SELECT NomPrenom FROM ResponsableReseaux;";
         PreparedStatement matriculePrepStat = connection.prepareStatement(matriculeSQLInstruction);
@@ -144,7 +135,6 @@ public class NewInstallationPanel extends JPanel {
         add(matriculeComboBox);
 
         codeOSLabel = new JLabel("OS (requis) : ");
-        // codeOSLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(codeOSLabel);
         String codeOSSQLInstruction = "SELECT Libelle FROM OS;";
         PreparedStatement codeOSPrepStat = connection.prepareStatement(codeOSSQLInstruction);
@@ -154,18 +144,18 @@ public class NewInstallationPanel extends JPanel {
         codeOSComboBox.addActionListener(validationActionListener);
         add(codeOSComboBox);
 
-        validateButton = new JButton("Valider");
-        validateButton.addActionListener(actionListener);
-        add(validateButton);
-
         cancelButton = new JButton("Réinitialiser");
         cancelButton.addActionListener(actionListener);
         add(cancelButton);
 
+        validateButton = new JButton("Valider");
+        validateButton.addActionListener(actionListener);
+        add(validateButton);
+
         validateElements();
     }
 
-    private class actionManager implements ActionListener {
+    private class ActionManager implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -173,18 +163,14 @@ public class NewInstallationPanel extends JPanel {
                 if (validateElements())
                     submitForm();
                 else
-                    JOptionPane.showMessageDialog(null,"Veuillez vérifier que vous avez bien rempli tous les champs requis (en rouge).","", JOptionPane.INFORMATION_MESSAGE,null);
+                    JOptionPane.showMessageDialog(null,
+                            "Veuillez vérifier que vous avez bien rempli tous les champs requis (en rouge).", "",
+                            JOptionPane.INFORMATION_MESSAGE, null);
             } else if (e.getSource() == cancelButton) {
-                int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous réinitialiser tous les champs?","", 0,JOptionPane.WARNING_MESSAGE,null,options,null);
-                if(confirmDialog == 0){
-                    removeAll();
-                    try {
-                        addElements();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    revalidate();
-                    repaint();
+                int confirmDialog = JOptionPane.showOptionDialog(null, "Voulez vous réinitialiser tous les champs ?", "",
+                        0, JOptionPane.WARNING_MESSAGE, null, optionsCancelJOptionPane, null);
+                if (confirmDialog == 0) {
+                    refreshPanel();
                 }
 
             }
@@ -270,7 +256,8 @@ public class NewInstallationPanel extends JPanel {
             myPrepStatSubmitForm.setString(11, (String) codeOSSQLResult[0]);
 
             myPrepStatSubmitForm.executeUpdate();
-            JOptionPane.showMessageDialog(null,"Vos changements ont bien été effectués !","", JOptionPane.INFORMATION_MESSAGE,null);
+            JOptionPane.showMessageDialog(null, "Vos changements ont bien été effectués !", "",
+                    JOptionPane.INFORMATION_MESSAGE, null);
             refreshPanel();
         } catch (SQLException e) {
             // print message d'erreur
@@ -278,7 +265,7 @@ public class NewInstallationPanel extends JPanel {
         }
     }
 
-    private class validationActionManager implements ActionListener {
+    private class ValidationActionManager implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {

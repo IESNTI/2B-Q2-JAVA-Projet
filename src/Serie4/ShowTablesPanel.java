@@ -12,19 +12,20 @@ import java.sql.SQLException;
 import javax.swing.*;
 import java.sql.Connection;
 
-public class ShowInstallationPanel extends JPanel {
-    private JLabel dummyLabel,changeTableLabel;
-    private String showTables = "SHOW TABLES";
-
-    private JButton findButton;
-    private JTable requestTable,showTablesTable;
+public class ShowTablesPanel extends JPanel {
+    private JLabel changeTableLabel;
+    private String[] tables = { "Installation", "AnneeEtude", "Software", "Editeur", "FamilleSoftware", "Fournisseur",
+            "OS", "Professeur", "ResponsableReseaux", "Section", "SoftwarePreinstalle", "TypePC",
+            "UtilisationSoftware" };
+    private JComboBox tableSelect;
+    private JTable myTable;
     private JScrollPane SQLtable;
 
     private ValidationActionManager searchButtonListener = new ValidationActionManager();
 
     private Connection connection;
 
-    public ShowInstallationPanel(Connection connection) {
+    public ShowTablesPanel(Connection connection) {
         this.connection = connection;
         setLayout(new FlowLayout(FlowLayout.CENTER));
 

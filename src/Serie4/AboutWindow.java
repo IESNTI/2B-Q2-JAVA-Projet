@@ -17,9 +17,7 @@ public class AboutWindow extends JFrame{
             }
         });
 
-        //Centers the display window
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        setLocationRelativeTo(null);
 
         panel = new AboutPanel();
         cont = getContentPane();
