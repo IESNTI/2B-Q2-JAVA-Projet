@@ -150,7 +150,7 @@ public class ConnectionPanel extends JPanel {
             myPrepStat.setString(2, String.valueOf(passwordTextField.getPassword()));
             ResultSet resultSet = myPrepStat.executeQuery();
             if (resultSet.next()) {
-                JOptionPane.showMessageDialog(loginJButton, "Identifiants correct !");
+                JOptionPane.showMessageDialog(loginJButton, "Identifiants corrects !");
                 bar.setVisible(true);
                 cont.removeAll();
                 cont.add(welcomePanel);
