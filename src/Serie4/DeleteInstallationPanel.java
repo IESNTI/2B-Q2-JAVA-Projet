@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DeleteInstallationPanel extends JPanel {
@@ -64,11 +65,19 @@ public class DeleteInstallationPanel extends JPanel {
             int confirmDialog = JOptionPane.showOptionDialog(null,"Voulez vous supprimer l'installation n°" + installationToDelete.getText()+ " ?","", 0,JOptionPane.INFORMATION_MESSAGE,null, confirmOptions,null);
             if(confirmDialog == 0){
                 try {
-                    String sqlInstruction = ("DELETE FROM Installation WHERE idInstallation = "+ installationToDelete.getText() + ";");
-                    PreparedStatement prepStat = connection.prepareStatement(sqlInstruction);
-                    prepStat.execute();
-                    JOptionPane.showConfirmDialog(null, "La ligne a été effacée", "Display", JOptionPane.PLAIN_MESSAGE);
-                    sqlRequest(codeSoftwareInput);
+                    String sqlRequestInstruction = ("SELECT * FROM Installation WHERE idInstallation = "+ installationToDelete.getText() + ";");
+                    PreparedStatement myPrepStat = connection.prepareStatement(sqlRequestInstruction);
+                    ResultSet resultSet = myPrepStat.executeQuery();
+                    if (resultSet.next()) {
+                        String sqlDeleteInstruction = ("DELETE FROM Installation WHERE idInstallation = " + installationToDelete.getText() + ";");
+                        PreparedStatement prepStat = connection.prepareStatement(sqlDeleteInstruction);
+                        prepStat.execute();
+                        JOptionPane.showConfirmDialog(null, "La ligne a été effacée", "Display", JOptionPane.PLAIN_MESSAGE);
+                        sqlRequest(codeSoftwareInput);
+                    }
+                    else {
+                        JOptionPane.showConfirmDialog(null, "Le idInstallation que vous avez encodé n'existe pas.", "Display", JOptionPane.PLAIN_MESSAGE);
+                    }
                     } catch (SQLException o) {
                         System.out.println(o.getMessage());
                     }
