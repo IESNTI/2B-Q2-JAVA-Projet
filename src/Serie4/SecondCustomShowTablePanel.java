@@ -46,7 +46,7 @@ public class SecondCustomShowTablePanel extends JPanel {
             }
             else {
                 String editorInput = editorTable.getValueAt(editorTable.getSelectedRow(), 0).toString();
-                String instruction = "SELECT * FROM Software WHERE CodeEdit = '" + editorInput + "'";
+                String instruction = "SELECT * FROM Software WHERE CodeEdit = '" + editorInput + "'AND MemCarteVideoMin = 0";
                 sqlRequest(instruction, 900, 300);
             }
         }
